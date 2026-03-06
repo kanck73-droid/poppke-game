@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poppe den Poppke</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#6fb3ff;
+display:flex;
+flex-direction:column;
+height:100vh;
+}
+
+/* CODE GUI */
+
+#secretGUI{
+position:fixed;
+bottom:10px;
+right:10px;
+background:white;
+padding:5px;
+border-radius:8px;
+box-shadow:0 2px 8px rgba(0,0,0,0.2);
+z-index:1000;
+font-size:12px;
+}
+
+#secretGUI input{
+width:80px;
+font-size:12px;
+padding:3px;
+}
+
+#secretGUI button{
+font-size:12px;
+padding:3px 6px;
+}
+
+/* CLASSROOM */
+
+#scene{
+flex:1;
+position:relative;
+background:#bde0ff;
+}
+
+.board{
+position:absolute;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+width:60%;
+height:90px;
+background:#2e6b2e;
+border-radius:10px;
+}
+
+/* DESKS */
+
+.desk{
+position:absolute;
+width:90px;
+height:40px;
+background:#b57a3c;
+border-radius:6px;
+box-shadow:0 3px 0 #8a5a2b;
+}
+
+/* CHAIRS */
+
+.chair{
+position:absolute;
+width:40px;
+height:40px;
+background:#666;
+border-radius:6px;
+}
+
+/* CHARACTERS */
+
+.character{
+position:absolute;
+bottom:110px;
+text-align:center;
+animation:idle 2s infinite ease-in-out;
+}
+
+.name{
+font-weight:bold;
+background:white;
+padding:4px 8px;
+border-radius:8px;
+margin-bottom:6px;
+font-size:14px;
+}
+
+.sprite{
+width:70px;
+height:70px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+}
+
+.ludwig{background:#ffe08a;}
+.fabian{background:#222;color:white;}
+.valentin{background:#7c4cff;color:white;}
+
+@keyframes idle{
+0%{transform:translateY(0)}
+50%{transform:translateY(-5px)}
+100%{transform:translateY(0)}
+}
+
+/* UI */
+
+#ui{
+background:white;
+padding:15px;
+box-shadow:0 -5px 10px rgba(0,0,0,0.2);
+}
+
+#text{
+font-size:18px;
+margin-bottom:15px;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:10px;
+font-size:18px;
+border:none;
+border-radius:10px;
+background:#4da6ff;
+color:white;
+}
+
+button:active{
+background:#2d87e2;
+}
+
+#restart{
+background:#ff5b5b;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="secretGUI">
+<input id="secretInput" placeholder="Code">
+<button onclick="checkSecret()">OK</button>
+</div>
+
+<div id="scene">
+
+<div class="board"></div>
+
+<!-- desks -->
+<div class="desk" style="left:20%;bottom:60px"></div>
+<div class="desk" style="left:40%;bottom:60px"></div>
+<div class="desk" style="left:65%;bottom:60px"></div>
+
+<!-- chairs -->
+<div class="chair" style="left:23%;bottom:30px"></div>
+<div class="chair" style="left:43%;bottom:30px"></div>
+<div class="chair" style="left:68%;bottom:30px"></div>
+
+<!-- characters -->
+
+<div class="character" style="left:20%">
+<div class="name">Ludwig</div>
+<div class="sprite ludwig">📘</div>
+</div>
+
+<div class="character" style="left:40%">
+<div class="name">Valentin Poppke</div>
+<div class="sprite valentin">🎮</div>
+</div>
+
+<div class="character" style="left:65%">
+<div class="name">Fabian</div>
+<div class="sprite fabian">🥤</div>
+</div>
+
+</div>
+
+<div id="ui">
+<div id="text"></div>
+<div id="choices"></div>
+<button id="restart" onclick="restart()">Neustart</button>
+</div>
+
+<audio id="birthdaySound">
+<source src="https://www.soundjay.com/human/sounds/happy-birthday-song-01.mp3">
+</audio>
+
+<script>
+
+function setText(t){
+document.getElementById("text").innerText=t
+}
+
+function setChoices(arr){
+let c=document.getElementById("choices")
+c.innerHTML=""
+
+arr.forEach(a=>{
+let b=document.createElement("button")
+b.innerText=a.text
+b.onclick=a.action
+c.appendChild(b)
+})
+}
+
+function restart(){
+startGame()
+}
+
+function startGame(){
+
+setText("Valentin: Lass uns Fabian pranken und sagen wir haben einen Test.")
+
+setChoices([
+{
+text:"Fabian pranken",
+action:prank
+},
+{
+text:"Nicht pranken",
+action:rules
+}
+])
+
+}
+
+function rules(){
+
+setText("Ludwig: Das ist gegen die Server Regeln.")
+
+setChoices([
+{ text:"Zurück zum Anfang", action:startGame }
+])
+
+}
+
+function prank(){
+
+setText("Fabian merkt dass es ein Prank war und wirft wütend einen Stuhl!")
+
+setChoices([
+{ text:"Weiter", action:jeremy }
+])
+
+}
+
+function jeremy(){
+
+setText("Fabian geht zu Jeremy (dem Auto Schüler). Jeremy sagt: 'Der Test ist nicht echt.'")
+
+setChoices([
+{
+text:"Jeremy beschuldigen",
+action:ending1
+},
+{
+text:"Carl hat Geburtstag",
+action:ending2
+}
+])
+
+}
+
+function ending1(){
+
+setText("Jeremy hat den Lehrer informiert. GAME OVER.")
+
+setChoices([
+{ text:"Neustart", action:startGame }
+])
+
+}
+
+function ending2(){
+
+setText("Fabian tanzt und singt Happy Birthday!")
+
+setChoices([
+{ text:"Level 2 starten", action:level2 }
+])
+
+}
+
+function level2(){
+
+setText("Level 2: Der Geburtstagsplan.")
+
+setChoices([
+{
+text:"Paragraph 404 sagen",
+action:para404
+},
+{
+text:"Party planen",
+action:win
+}
+])
+
+}
+
+function para404(){
+
+setText("Paragraph not found. Fabian ruft den Lehrer. GAME OVER.")
+
+setChoices([
+{ text:"Neustart", action:startGame }
+])
+
+}
+
+function win(){
+
+setText("Du hast Poppe den Poppke geschafft!")
+
+setChoices([
+{ text:"Nochmal spielen", action:startGame }
+])
+
+}
+
+/* SECRET LEVEL */
+
+function checkSecret(){
+
+let code=document.getElementById("secretInput").value
+
+if(code==="Azziz"){
+secretLevel()
+}else{
+alert("Falscher Code")
+}
+
+}
+
+function secretLevel(){
+
+setText("GEHEIMLEVEL: Carl wurde eingesperrt!")
+
+setChoices([
+{
+text:"Happy Birthday abspielen",
+action:playBirthday
+},
+{
+text:"Zurück zum Spiel",
+action:startGame
+}
+])
+
+}
+
+function playBirthday(){
+
+document.getElementById("birthdaySound").play()
+
+setText("Carl hört Happy Birthday und freut sich!")
+
+setChoices([
+{
+text:"Zurück zum Spiel",
+action:startGame
+}
+])
+
+}
+
+startGame()
+
+</script>
+
+</body>
+</html>
